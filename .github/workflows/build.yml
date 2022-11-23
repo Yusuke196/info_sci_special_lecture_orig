@@ -20,6 +20,8 @@ jobs:
           key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies
         if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        env:
+          PYTHON_KEYRING_BACKEND: keyring.backends.null.Keyring
         run: poetry install --no-interaction
       - name: Run tests
         run: poetry run pytest
