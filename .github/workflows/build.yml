@@ -5,11 +5,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Install poetry
+        uses: snok/install-poetry@v1
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v3
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
       - name: Install dependencies
         run: |
-          cd $GITHUB_WORKSPACE
-          python -m pip install --upgrade pip
-          python -m pip install poetry
-          poetry install
-      - name: Run Tests
+          poetry install --no-interaction
+      - name: Run tests
         run: poetry run pytest
